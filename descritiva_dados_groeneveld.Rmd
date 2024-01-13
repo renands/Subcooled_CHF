@@ -5,25 +5,63 @@ date: "2024-01-13"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,message = FALSE)
 ```
 
-## R Markdown
+# Descritiva dados groenveld
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Neste documento serão apresentadas as estatísticas descritivas dos dados
+disponibilizados por Groeneveld (2006) para o desenvolvimento da sua LUT (lookup table)
+disponiveis em https://www.nrc.gov/reading-rm/doc-collections/nuregs/knowledge/km0011/index.html
+para download.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# Bibliotecas utilizadas
 
-```{r cars}
-summary(cars)
+```{r}
+
+library(dplyr)
+library(janitor)
+library(ggplot2)
+library(ggpubr)
+library(GGally)
+library(gridExtra)
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+# Leitura da base
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+Base tratada a partir do pdf no codigo trata_base_groeneveld.R
+
+```{r}
+base_look_up = read.csv2("dados_groeneveld.csv")
+
+base_look_up = base_look_up %>%
+  select(-X)
+
+head(base_look_up)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+# variaveis disponiveis na base
+
+colnames(base_look_up)
+```
+
+# Medidas de dispersão Básicas
+
+```{r}
+
+summary(base_look_up)
+
+sd(base_look_up$D_mm)
+sd(base_look_up$L_mm)
+sd(base_look_up$P_kpa)
+sd(base_look_up$G)
+sd(base_look_up$X_chf)
+sd(base_look_up$DH_in)
+sd(base_look_up$CHF)
+sd(base_look_up$T_in)
+
+```
+
