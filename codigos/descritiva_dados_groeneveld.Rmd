@@ -1,0 +1,277 @@
+---
+title: "Descritiva Dados Groeneveld"
+output: html_document
+date: "2024-01-13"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message = FALSE,warning = FALSE)
+```
+
+# Descritiva dados groenveld total e subresfriado
+
+Neste documento serão apresentadas as estatísticas descritivas dos dados
+disponibilizados por Groeneveld (2006) para o desenvolvimento da sua LUT (lookup table)
+disponiveis em https://www.nrc.gov/reading-rm/doc-collections/nuregs/knowledge/km0011/index.html
+para download.
+
+# Bibliotecas utilizadas
+
+```{r}
+
+library(dplyr)
+library(janitor)
+library(ggplot2)
+library(ggpubr)
+library(GGally)
+library(gridExtra)
+
+```
+
+
+# Leitura da base
+
+Base tratada a partir do pdf no codigo trata_base_groeneveld.R
+
+```{r}
+base_look_up = read.csv2("../dados/dados_groeneveld.csv")
+
+base_look_up = base_look_up %>%
+  select(-X)
+
+head(base_look_up)
+```
+
+```{r}
+# variaveis disponiveis na base
+
+colnames(base_look_up)
+```
+
+## Medidas de dispersão Básicas
+
+```{r}
+
+summary(base_look_up)
+
+sd(base_look_up$D_mm)
+sd(base_look_up$L_mm)
+sd(base_look_up$P_kpa)
+sd(base_look_up$G)
+sd(base_look_up$X_chf)
+sd(base_look_up$DH_in)
+sd(base_look_up$CHF)
+sd(base_look_up$T_in)
+
+```
+
+
+## Graficos Variável x CHF
+
+```{r}
+
+# pressao
+
+ggplot(base_look_up) +
+  geom_point(aes(x = P_kpa, y = CHF))
+
+
+# fluxo
+
+ggplot(base_look_up) +
+  geom_point(aes(x = G, y = CHF))
+
+# X
+
+ggplot(base_look_up) +
+  geom_point(aes(x = X_chf, y = CHF))
+
+# diametro
+
+ggplot(base_look_up) +
+  geom_point(aes(x = D_mm, y = CHF))
+
+# L comprimento
+
+ggplot(base_look_up) +
+  geom_point(aes(x = L_mm, y = CHF))
+
+# DHin inlet subcooling Tsat - Tin
+
+ggplot(base_look_up) +
+  geom_point(aes(x = DH_in, y = CHF))
+
+# Tin temperatura de entrada
+
+ggplot(base_look_up) +
+  geom_point(aes(x = T_in, y = CHF))
+
+```
+
+## Plot 2x2 das variáveis
+
+```{r}
+
+# plot 2 a 2 das variaveis
+base_look_up %>%
+  dplyr::select(D_mm,
+                L_mm,
+                P_kpa,
+                G,
+                X_chf,
+                DH_in,
+                CHF,
+                T_in
+  ) %>%  GGally::ggpairs(upper = list(continuous = wrap(ggally_cor, display_grid = FALSE)),
+          lower = list(continuous = wrap("points",
+                                         color = "navy",
+                                         alpha = 1/10,
+                                         size = 0.1)),
+          proportions = "auto") 
+
+# jpeg("descritiva_dados_groenveld_2.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
+# plot_look_up
+# dev.off()
+# 
+# plot_look_up = plot_look_up + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+
+```
+
+## Distribuicao da Variável Resposta
+
+```{r}
+
+ggplot(base_look_up) +
+  geom_density(aes(x = CHF))
+
+```
+
+# Descritiva dados Subresfriado
+
+## Gera base para X_chf < 0
+
+Iremos considerar como fluxo subresfriado aqueles que tem a qualidade < 0
+
+```{r}
+
+base_sub = base_look_up %>%
+  filter(X_chf < 0)
+
+nrow(base_sub)
+  
+```
+
+
+## Medidas de dispersão Básicas
+
+```{r}
+
+summary(base_sub)
+
+sd(base_sub$D_mm)
+sd(base_sub$L_mm)
+sd(base_sub$P_kpa)
+sd(base_sub$G)
+sd(base_sub$X_chf)
+sd(base_sub$DH_in)
+sd(base_sub$CHF)
+sd(base_sub$T_in)
+
+```
+
+#distribuicao das referencias
+
+```{r}
+
+referencias = base_sub %>%
+  group_by(Reference) %>% 
+  count() %>%
+  arrange(desc(n))
+
+referencias
+
+```
+
+
+## Graficos Variável x CHF
+
+```{r}
+
+# pressao
+
+ggplot(base_sub) +
+  geom_point(aes(x = P_kpa, y = CHF))
+
+
+# fluxo
+
+ggplot(base_sub) +
+  geom_point(aes(x = G, y = CHF))
+
+# X
+
+ggplot(base_sub) +
+  geom_point(aes(x = X_chf, y = CHF))
+
+# diametro
+
+ggplot(base_sub) +
+  geom_point(aes(x = D_mm, y = CHF))
+
+# L comprimento
+
+ggplot(base_sub) +
+  geom_point(aes(x = L_mm, y = CHF))
+
+# DHin inlet subcooling Tsat - Tin
+
+ggplot(base_sub) +
+  geom_point(aes(x = DH_in, y = CHF))
+
+# Tin temperatura de entrada
+
+ggplot(base_sub) +
+  geom_point(aes(x = T_in, y = CHF))
+
+```
+
+## Plot 2x2 das variáveis
+
+```{r}
+
+# plot 2 a 2 das variaveis
+base_sub %>%
+  dplyr::select(D_mm,
+                L_mm,
+                P_kpa,
+                G,
+                X_chf,
+                DH_in,
+                CHF,
+                T_in
+  ) %>%  GGally::ggpairs(upper = list(continuous = wrap(ggally_cor, display_grid = FALSE)),
+          lower = list(continuous = wrap("points",
+                                         color = "navy",
+                                         alpha = 1/10,
+                                         size = 0.1)),
+          proportions = "auto") 
+
+# jpeg("descritiva_dados_groenveld_2.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
+# plot_look_up
+# dev.off()
+# 
+# plot_look_up = plot_look_up + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+
+```
+
+## Distribuicao da Variável Resposta
+
+```{r}
+
+ggplot(base_sub) +
+  geom_density(aes(x = CHF))
+
+```
+

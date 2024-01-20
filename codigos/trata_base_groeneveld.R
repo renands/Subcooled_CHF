@@ -6,7 +6,7 @@ library(stringr)
 library(dplyr)
 
 # pdf com dados groeneveld
-dados_groeneveld <- pdf_text("dados_groeneneveld.pdf")
+dados_groeneveld <- pdf_text("../dados/dados_groeneneveld.pdf")
 
 # numero de paginas no pdf
 length(dados_groeneveld)
@@ -166,8 +166,6 @@ df_groeneveld = df_groeneveld %>%
 df_groeneveld["D_mm"] = df_groeneveld$D_m*1000
 df_groeneveld["L_mm"] = df_groeneveld$L_m*1000
 
-df_groeneveld = df_groeneveld %>%
-  select(-D_m,-L_m)
 
 # gera csv com base tratada
 
