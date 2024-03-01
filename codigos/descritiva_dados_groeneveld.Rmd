@@ -169,7 +169,8 @@ nrow(base_sub)
 
 summary(base_sub)
 
-sd(base_sub$D_mm)
+
+  sd(base_sub$D_mm)
 sd(base_sub$L_mm)
 sd(base_sub$P_kpa)
 sd(base_sub$G)
@@ -200,9 +201,37 @@ referencias
 
 # pressao
 
-ggplot(base_sub) +
-  geom_point(aes(x = P_kpa, y = CHF))
+p = ggplot() +
+  geom_point(aes(x = base_sub$P_kpa, y = base_sub$CHF)) +
+  geom_smooth(aes(x = seq(100,20680), y = seq(100,20680) * -0.1875 + 6975.3103,colour = "CHF = 6975.3105 - 18.75 * Pressure"))+
+  geom_smooth(aes(x = seq(100,20680), y = seq(100,20680) * -0.2 + 6000,colour = "CHF = 6000 - 0.2 * Pressure"))+
+  geom_smooth(aes(x = seq(100,20680), y = seq(100,20680) * -0.17 + 7500,colour = "CHF = 7500 - 0.17 * Pressure")) +
+  theme(legend.position = "bottom") +
+  labs(color=NULL) +
+  xlab("Pressure") +
+  ylab("CHF")
 
+p = ggplot(base_sub) +
+  geom_point(aes(P_kpa, y = CHF)) +
+  geom_smooth(aes(P_kpa, y = CHF), method = lm, formula = "y ~ x", se = TRUE) +
+  xlab("Pressure") +
+  ylab("CHF")
+
+p
+
+lm_example = lm(data = base_sub,
+   CHF ~ P_kpa)
+
+summary(lm_example)
+confint(lm_example,level = 0.90)
+
+library(stargazer)
+
+stargazer(lm_example, ci=TRUE, ci.level=0.95)
+
+jpeg("../Subcooled_CHF/dados/dados_pressao_gro.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
+p
+dev.off()
 
 # fluxo
 
@@ -239,30 +268,27 @@ ggplot(base_sub) +
 ## Plot 2x2 das variáveis
 
 ```{r}
-
+library(GGally)
 # plot 2 a 2 das variaveis
-base_sub %>%
+plot_pair = base_sub %>%
   dplyr::select(D_mm,
                 L_mm,
                 P_kpa,
                 G,
                 X_chf,
-                DH_in,
-                CHF,
-                T_in
-  ) %>%  GGally::ggpairs(upper = list(continuous = wrap(ggally_cor, display_grid = FALSE)),
+                CHF
+  ) %>%
+  ggpairs(upper = list(continuous = wrap(ggally_cor, display_grid = FALSE)),
           lower = list(continuous = wrap("points",
                                          color = "navy",
                                          alpha = 1/10,
                                          size = 0.1)),
-          proportions = "auto") 
+          proportions = "auto") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-# jpeg("descritiva_dados_groenveld_2.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
-# plot_look_up
-# dev.off()
-# 
-# plot_look_up = plot_look_up + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
+jpeg("../Subcooled_CHF/dados/dados_pares_sub_groen.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
+plot_pair
+dev.off()
 
 ```
 
