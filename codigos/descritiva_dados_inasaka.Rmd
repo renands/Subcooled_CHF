@@ -1,0 +1,120 @@
+---
+title: "dados_inasaka"
+output: html_document
+date: "2024-03-03"
+---
+
+
+
+```{r}
+
+library(dplyr)
+library(janitor)
+library(ggplot2)
+library(ggpubr)
+library(GGally)
+library(gridExtra)
+library(stringr)
+```
+
+```{r}
+base_sub = read.csv2("../dados/dados_inasaka_1992.csv",dec = ".")
+
+base_sub["D_mm"] = 3
+base_sub["L_mm"] = 100
+
+summary(base_sub)
+base_sub$X_o
+```
+
+
+```{r}
+
+# converte as unidades de medida
+
+base_sub["P_kpa"] = base_sub$P_Mpa*1000
+base_sub["CHF"] = base_sub$CHF_MW_M2*1000
+
+base_sub = base_sub %>%
+  select(
+    P_kpa,
+    G_kg_m2s,
+    CHF,
+    L_mm,
+    D_mm,
+    X_o
+  )
+
+summary(base_sub)
+
+```
+
+```{r}
+sd(base_sub$D_mm)
+sd(base_sub$L_mm)
+sd(base_sub$P_kpa)
+sd(base_sub$G_kg_m2s)
+sd(base_sub$X_o)
+sd(base_sub$CHF)
+```
+
+
+## Graficos Variável x CHF
+
+```{r}
+
+# pressao
+
+ggplot(base_sub) +
+  geom_point(aes(x = P_kpa, y = CHF))
+
+# fluxo
+
+ggplot(base_sub,aes(x = G, y = CHF)) +
+  geom_point() 
+
+# X
+
+ggplot(base_sub) +
+  geom_point(aes(x = X_o, y = CHF))
+
+
+# diametro
+
+ggplot(base_sub) +
+  geom_point(aes(x = D_mm, y = CHF))
+
+# L comprimento
+
+ggplot(base_sub) +
+  geom_point(aes(x = L_mm, y = CHF))
+
+
+```
+
+## Plot 2x2 das variáveis
+
+```{r}
+# plot 2 a 2 das variaveis
+plot_pair = base_sub %>%
+  dplyr::select(D_mm,
+                L_mm,
+                P_kpa,
+                G,
+                X_o,
+                CHF
+  ) %>%
+  ggpairs(upper = list(continuous = wrap(ggally_cor, display_grid = FALSE)),
+          lower = list(continuous = wrap("points",
+                                         color = "navy",
+                                         alpha = 1/10,
+                                         size = 0.1)),
+          proportions = "auto") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+  
+
+jpeg("../Subcooled_CHF/dados/dados_pares_sub_mud.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
+plot_pair
+dev.off()
+
+```

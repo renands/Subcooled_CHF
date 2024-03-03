@@ -1,0 +1,139 @@
+---
+title: "descritiva_dados_mudawar"
+output: html_document
+date: "2024-03-02"
+---
+
+```{r}
+
+library(dplyr)
+library(janitor)
+library(ggplot2)
+library(ggpubr)
+library(GGally)
+library(gridExtra)
+library(stringr)
+```
+
+```{r}
+#base_mud = read.csv2("../dados/dados_mudawar_alto_fluxo.csv",dec = ".")
+
+#base_mud = base_mud %>%
+#  select(
+#    L_mm,
+#    L_D,
+#    G_10_3,
+#    P_o,
+#    CHF_Wm,
+#    X_o
+#  )
+
+#write.csv(base_mud,"../dados/dados_mudawar_alto_fluxo_cols.csv",row.names = FALSE,dec = ".")
+
+base_sub = read.csv("../dados/dados_mudawar_alto_fluxo_cols.csv",dec = ".")
+
+head(base_sub)
+
+```
+
+
+```{r}
+
+# cria variavel de Diametro e arruma tipagem
+
+base_sub[1:43,"D_mm"] = 0.406
+base_sub[44:51,"D_mm"] = 0.500
+base_sub[52:55,"D_mm"] = 0.635
+base_sub[56:164,"D_mm"] = 0.902
+base_sub[165:172,"D_mm"] = 1.07
+base_sub[173:174,"D_mm"] = 2.54
+
+# converte as unidades de medida
+
+base_sub["P_kpa"] = (base_sub$P_o*100000)/1000
+base_sub["G"] = base_sub$G_10_3*1000
+base_sub["CHF"] = (base_sub$CHF_Wm*1000000)/1000
+
+base_sub = base_sub %>%
+  select(
+    P_kpa,
+    G,
+    CHF,
+    L_mm,
+    D_mm,
+    X_o
+  )
+
+summary(base_sub)
+
+```
+
+```{r}
+sd(base_sub$D_mm)
+sd(base_sub$L_mm)
+sd(base_sub$P_kpa)
+sd(base_sub$G)
+sd(base_sub$X_o)
+sd(base_sub$CHF)
+```
+
+
+## Graficos Variável x CHF
+
+```{r}
+
+# pressao
+
+ggplot(base_sub) +
+  geom_point(aes(x = P_kpa, y = CHF))
+
+# fluxo
+
+ggplot(base_sub,aes(x = G, y = CHF)) +
+  geom_point() 
+
+# X
+
+ggplot(base_sub) +
+  geom_point(aes(x = X_o, y = CHF))
+
+
+# diametro
+
+ggplot(base_sub) +
+  geom_point(aes(x = D_mm, y = CHF))
+
+# L comprimento
+
+ggplot(base_sub) +
+  geom_point(aes(x = L_mm, y = CHF))
+
+
+```
+
+## Plot 2x2 das variáveis
+
+```{r}
+# plot 2 a 2 das variaveis
+plot_pair = base_sub %>%
+  dplyr::select(D_mm,
+                L_mm,
+                P_kpa,
+                G,
+                X_o,
+                CHF
+  ) %>%
+  ggpairs(upper = list(continuous = wrap(ggally_cor, display_grid = FALSE)),
+          lower = list(continuous = wrap("points",
+                                         color = "navy",
+                                         alpha = 1/10,
+                                         size = 0.1)),
+          proportions = "auto") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+  
+
+jpeg("../Subcooled_CHF/dados/dados_pares_sub_mud.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
+plot_pair
+dev.off()
+
+```
