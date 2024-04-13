@@ -45,6 +45,8 @@ base_sub = base_sub %>%
     X_o
   )
 
+write.csv(base_sub,"dados_modelagem_inasaka.csv",row.names = FALSE)
+
 summary(base_sub)
 
 ```
@@ -111,10 +113,6 @@ plot_pair = base_sub %>%
                                          size = 0.1)),
           proportions = "auto") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
-  
 
-jpeg("../Subcooled_CHF/dados/dados_pares_sub_mud.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
-plot_pair
-dev.off()
 
 ```

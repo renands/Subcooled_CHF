@@ -158,6 +158,9 @@ Iremos considerar como fluxo subresfriado aqueles que tem a qualidade < 0
 base_sub = base_look_up %>%
   filter(X_chf < 0)
 
+
+write.csv(base_sub,"base_modelagem_groenveld.csv",row.names = FALSE)
+
 nrow(base_sub)
   
 ```

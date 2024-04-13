@@ -66,6 +66,8 @@ base_sub = base_sub %>%
 
 summary(base_sub)
 
+write.csv(base_sub,"dados_modelagem_mudawar.csv",row.names = FALSE)
+
 ```
 
 ```{r}
