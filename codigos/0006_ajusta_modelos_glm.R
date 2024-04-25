@@ -1,16 +1,12 @@
 library(dplyr)
 library(ggplot2)
-options(scipen=999)
+setwd("../Subcooled_CHF/dados/")
+base_treino = readRDS("dados_treinamento_2.rds")
+base_teste = readRDS("dados_teste_2.rds")
 
-base_treino_2 = read.csv("dados/base_treino.csv")
-base_teste_2 = read.csv("dados/base_teste.csv")
-base_modelagem = rbind(base_treino_2,base_teste_2)
-
-base_treino = readRDS("dados/dados_treinamento.rds")
-base_teste = readRDS("dados/dados_teste.rds")
-
-
-## MODELO GLM COM DISTRIBUISSAO NORMAL E FUNCAO DE LIGACAO LOG ##
+################################################################################
+######### MODELO GLM COM DISTRIBUISSAO NORMAL E FUNCAO DE LIGACAO LOG ##########
+################################################################################
 
 # Number of folds for cross-validation
 k <- 10
@@ -47,9 +43,14 @@ glm_mean_rmse <- mean(glm_rmse_teste)
 # Print the mean RMSE for each model
 cat("Mean RMSE for Generalized Linear Regression (glm) - NORMAL DIST - LOG LINK:", glm_mean_rmse, "\n")
 
-#saveRDS(base_treino,"dados/dados_treinamento.rds")
-#saveRDS(base_teste,"dados/dados_teste.rds")
-#saveRDS(modelos_glm,"dados/modelos_glm_gauss_log.rds")
+
+# saveRDS(base_treino,"dados_treinamento.rds")
+# saveRDS(base_teste,"dados_teste.rds")
+# saveRDS(modelos_glm,"modelos_glm_gauss_log.rds")
+
+
+
+
 
 ### modelo glm distribuicao gamma com link log
 
@@ -87,9 +88,9 @@ glm_mean_rmse <- mean(glm_rmse_teste)
 cat("Mean RMSE for Generalized Linear Regression (glm) - GAMMA DIST - LOG LINK:", glm_mean_rmse, "\n")
 
 
-#saveRDS(base_treino,"dados/dados_treinamento.rds")
-#saveRDS(base_teste,"dados/dados_teste.rds")
-#saveRDS(modelos_glm,"dados/modelos_glm_gamma_log.rds")
+# saveRDS(base_treino,"dados_treinamento.rds")
+# saveRDS(base_teste,"dados_teste.rds")
+# saveRDS(modelos_glm,"modelos_glm_gamma_log.rds")
 
 
 
@@ -129,9 +130,9 @@ glm_mean_rmse <- mean(glm_rmse_teste)
 cat("Mean RMSE for Generalized Linear Regression (glm) - GAMMA DIST - LOG LINK - INTERACOES 2º GRAU", glm_mean_rmse, "\n")
 
 
-#saveRDS(base_treino,"dados/dados_treinamento.rds")
-#saveRDS(base_teste,"dados/dados_teste.rds")
-#saveRDS(modelos_glm,"dados/modelos_glm_gamma_log_inter.rds")
+saveRDS(base_treino,"dados_treinamento.rds")
+saveRDS(base_teste,"dados_teste.rds")
+saveRDS(modelos_glm,"modelos_glm_gamma_log_inter.rds")
 
 #### modelo com distribuicao normal e link log com interacoes de 2º grau
 
@@ -170,6 +171,6 @@ glm_mean_rmse <- mean(glm_rmse_teste)
 # Print the mean RMSE for each model
 cat("Mean RMSE for Generalized Linear Regression (glm) - NORMAL DIST - LOG LINK:", glm_mean_rmse, "\n")
 
-saveRDS(base_treino,"dados/dados_treinamento.rds")
-saveRDS(base_teste,"dados/dados_teste.rds")
-saveRDS(modelos_glm,"dados/modelos_glm_gauss_log_inter.rds")
+saveRDS(base_treino,"dados_treinamento.rds")
+saveRDS(base_teste,"dados_teste.rds")
+saveRDS(modelos_glm,"modelos_glm_gauss_log_inter.rds")
