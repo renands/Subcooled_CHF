@@ -134,7 +134,7 @@ plot_pair = base_sub %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
   
 
-jpeg("../Subcooled_CHF/dados/dados_pares_sub_mud.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
+jpeg("../dados/dados_pares_sub_mud.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
 plot_pair
 dev.off()
 

@@ -20,12 +20,14 @@ library(ggplot2)
 library(ggpubr)
 library(GGally)
 library(gridExtra)
+library(readr)
 
 ```
 
 
 ```{r}
-base_chf_zhao = read.csv("../dados/dados_zhao.csv")
+base_chf_zhao = read_csv("../dados/Data_CHF_Zhao_2020_ATE.csv")
+
 
 base_chf_zhao = janitor::clean_names(base_chf_zhao)
 
@@ -49,7 +51,16 @@ nrow(base_sub)
 base_sub$P_kpa = base_sub$pressure_m_pa*1000
 base_sub$CHF = base_sub$chf_exp_mw_m2*1000
 
-write.csv(base_sub,"dados_modelagem_zhao.csv",row.names = FALSE)
+duplicates <- base_sub |>
+  group_by(CHF,P_kpa,mass_flux_kg_m2_s,x_e_out,d_h_mm,length_mm) |>
+  filter(n() > 1) |>
+  ungroup()
+
+base_sub = base_sub[!(base_sub %>% 
+  select(CHF,P_kpa,mass_flux_kg_m2_s,x_e_out,d_h_mm,length_mm) %>%
+  duplicated()),]
+
+write.csv(base_sub,"../dados/dados_modelagem_zhao.csv",row.names = FALSE)
   
 ```
 
@@ -217,7 +228,7 @@ plot_pair = base_sub %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
   
 
-jpeg("../Subcooled_CHF/dados/dados_pares_sub_zhao.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
+jpeg("../dados/dados_pares_sub_zhao.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
 plot_pair
 dev.off()
 

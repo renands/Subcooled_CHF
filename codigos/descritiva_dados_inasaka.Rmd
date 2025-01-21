@@ -24,6 +24,9 @@ base_sub["D_mm"] = 3
 base_sub["L_mm"] = 100
 
 summary(base_sub)
+
+
+
 base_sub$X_o
 ```
 
@@ -45,7 +48,14 @@ base_sub = base_sub %>%
     X_o
   )
 
-write.csv(base_sub,"dados_modelagem_inasaka.csv",row.names = FALSE)
+duplicates <- base_sub |>
+  group_by(CHF,P_kpa,G_kg_m2s,X_o,D_mm,L_mm) |>
+  filter(n() > 1) |>
+  ungroup()
+
+
+
+write.csv(base_sub,"../dados/dados_modelagem_inasaka.csv",row.names = FALSE)
 
 summary(base_sub)
 
@@ -98,6 +108,9 @@ ggplot(base_sub) +
 
 ```{r}
 # plot 2 a 2 das variaveis
+
+base_sub$G = base_sub$G_kg_m2s
+
 plot_pair = base_sub %>%
   dplyr::select(D_mm,
                 L_mm,
@@ -113,6 +126,10 @@ plot_pair = base_sub %>%
                                          size = 0.1)),
           proportions = "auto") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+jpeg("../dados/dados_pares_sub_inasaka.jpeg",width = 17,height = 10.51,units = "cm",res = 300)
+plot_pair
+dev.off()
 
 
 ```

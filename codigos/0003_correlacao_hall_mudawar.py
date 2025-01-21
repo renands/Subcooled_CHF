@@ -89,11 +89,84 @@ base_modelagem["chf_entrada"] = base_modelagem.bo_entrada*base_modelagem.G*(base
 
 base_modelagem["l_d"] = base_modelagem.L/base_modelagem.D
  
-base_modelagem = base_modelagem[["dados_mudawar","X","CHF","G","D","L","P","predicoes_lookup_table","predicoes_lookup_table_0312","chf_saida","chf_entrada"]]
+base_modelagem = base_modelagem[["X","CHF","G","D","L","P","predicoes_lookup_table","predicoes_lookup_table_0312","chf_saida","chf_entrada"]]
 
 base_modelagem = base_modelagem.rename(columns = {"chf_entrada":"predicoes_mudawar_entrada","chf_saida":"predicoes_mudawar_saida"})
 
 base_modelagem.to_csv("dados_modelagem_2.csv",index = False)
+
+
+# escoragens base de validacao 
+
+base_validacao = pd.read_csv("dados_validacao_2.csv",sep = ",",decimal = ".")
+
+# converte unidades pressao kpa para bar, fluxo para 
+base_validacao["P_bar"] = (base_validacao.P/100)
+base_validacao["P_bar_mud"] = (base_validacao.P*1000)/100000
+base_validacao["G_mud"] = base_validacao.G/1000
+base_validacao["D_m"] = base_validacao.D/1000
+base_validacao["L_m"] = base_validacao.L/1000
+
+
+# calcula superficie de tensao
+base_validacao["surface_tension"] = base_validacao.P_bar.apply(lambda x: steamTable.st_p(x))
+
+# calcula densidade do liquido em saturacao
+
+base_validacao["densidade_liquido"] = base_validacao.P_bar.apply(lambda x: steamTable.rhoL_p(x))
+
+# calcula densidade do gas em saturacao
+
+base_validacao["densidade_vapor"] = base_validacao.P_bar.apply(lambda x: steamTable.rhoV_p(x))
+
+# calcula numero de weber
+
+base_validacao["weber"] = ((base_validacao.D_m) * (base_validacao.G**2)) / (base_validacao.surface_tension*base_validacao.densidade_liquido)
+
+# calcula boiling number na saida
+
+base_validacao["bo_saida"] = (
+  
+    c1*(base_validacao.weber**c2)*((base_validacao.densidade_liquido/base_validacao.densidade_vapor)**c3) *
+    (1 - c4*((base_validacao.densidade_liquido/base_validacao.densidade_vapor)**c5)*base_validacao.X)
+
+
+)
+
+base_validacao["entapia_liquido"] = base_validacao.P_bar.apply(lambda x: steamTable.hL_p(x))
+base_validacao["entapia_vapor"] = base_validacao.P_bar.apply(lambda x: steamTable.hV_p(x))
+
+
+base_validacao["chf_saida"] = base_validacao.bo_saida*base_validacao.G*(base_validacao.entapia_vapor - base_validacao.entapia_liquido)
+
+
+base_validacao["quality_start"] = base_validacao.X - base_validacao.bo_saida*(base_validacao.L_m/base_validacao.D_m)
+
+
+
+base_validacao["bo_entrada"] = (
+
+# numerador  
+( c1*(base_validacao.weber**c2)*((base_validacao.densidade_liquido/base_validacao.densidade_vapor)**c3) *
+    (1 - c4*((base_validacao.densidade_liquido/base_validacao.densidade_vapor)**c5)*base_validacao.quality_start) )/
+
+# denominador
+(1 + 4 * c1 * c4 * (base_validacao.weber**c2) * 
+((base_validacao.densidade_liquido/base_validacao.densidade_vapor)**(c3+c5)) * (base_validacao.D_m/base_validacao.L_m))
+  
+  
+)
+
+base_validacao["chf_entrada"] = base_validacao.bo_entrada*base_validacao.G*(base_validacao.entapia_vapor - base_validacao.entapia_liquido)
+
+base_validacao["l_d"] = base_validacao.L/base_validacao.D
+ 
+base_validacao = base_validacao[["X","CHF","G","D","L","P","predicoes_lookup_table","predicoes_lookup_table_0312","chf_saida","chf_entrada"]]
+
+base_validacao = base_validacao.rename(columns = {"chf_entrada":"predicoes_mudawar_entrada","chf_saida":"predicoes_mudawar_saida"})
+
+base_validacao.to_csv("dados_validacao_2.csv",index = False)
+
 
 
 

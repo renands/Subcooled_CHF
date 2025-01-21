@@ -3,7 +3,7 @@
 ################################################################################
 library(dplyr)
 library(ggplot2)
-setwd("../Subcooled_CHF/dados/")
+#setwd("../Subcooled_CHF/dados/")
 
 dados_modelagem = read.csv("dados_modelagem_2.csv")
 

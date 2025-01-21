@@ -1,8 +1,9 @@
 library(dplyr)
 library(ggplot2)
-setwd("../Subcooled_CHF/dados/")
+#setwd("../Subcooled_CHF/dados/")
 base_treino = readRDS("dados_treinamento_2.rds")
 base_teste = readRDS("dados_teste_2.rds")
+#base_validacao = read.csv("dados_validacao_2.csv",sep = ",",dec = ".")
 
 # Number of folds for cross-validation
 k <- 10
@@ -36,16 +37,16 @@ for (i in 1:k) {
   
 }
 
-# Calculate the mean RMSE for each model
-lm_mean_rmse <- mean(lm_rmse_teste)
+# lm_pred_validacao = exp(predict(lm_model, newdata = base_validacao))
+# base_validacao["predicoes_lm"] = lm_pred_validacao
 
-# Print the mean RMSE for each model
-cat("Mean RMSE for Linear Regression (lm):", lm_mean_rmse, "\n")
 
-# saveRDS(base_treino,"dados_treinamento_2.rds")
-# saveRDS(base_teste,"dados_teste_2.rds")
-#saveRDS(modelos_lm,"modelos_lm.rds")
-# 
+saveRDS(base_treino,"dados_treinamento_2.rds")
+saveRDS(base_teste,"dados_teste_2.rds")
+saveRDS(modelos_lm,"modelos_lm.rds")
+#write.csv(base_validacao,"dados_validacao_2.csv",row.names = FALSE)
+ 
+ # 
 # k <- 10
 # lm_rmse_treino <- rep(0, k)
 # lm_rmse_teste = rep(0,k)
