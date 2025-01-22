@@ -19,8 +19,6 @@ def predict_hall_mudawar_correlation(data):
   
   data_cols = list(data.columns.values)
 
-  print(data_cols)
-  
   # converte unidades pressao kpa para bar, fluxo para 
   data["P_bar"] = (data.P/100)
   data["P_bar_mud"] = (data.P*1000)/100000
@@ -84,6 +82,6 @@ def predict_hall_mudawar_correlation(data):
    
   data = data[data_cols + ["chf_entrada","chf_saida"]]
   
-  data = data.rename(columns = {"chf_entrada":"CHF_PREDITO_MODELO_INPUT","chf_saida":"CHF_PREDITO_MODELO_OUTPUT"})
+  data = data.rename(columns = {"chf_entrada":"PREDICTED_CHF_INPUT_MODEL","chf_saida":"PREDICTED_CHF_OUTPUT_MODEL"})
 
   return data

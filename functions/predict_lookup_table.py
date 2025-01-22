@@ -27,11 +27,11 @@ def predict_lookup_table(data):
   data.X,
   data.G)
   
-  data["CHF_PREDITO_LOOKUP_05"] = (
+  data["PREDICTED_CHF_LOOKUP_05"] = (
     preds_interpolador_modelagem/np.sqrt((data.D/8))
   )
   
-  data["CHF_PREDITO_LOOKUP_0312"] = (
+  data["PREDICTED_CHF_LOOKUP_0312"] = (
     preds_interpolador_modelagem/((data.D/8)**(0.312))
   )
   

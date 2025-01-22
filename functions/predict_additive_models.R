@@ -10,7 +10,7 @@ predict_best_lm <- function(data){
   
   predicoes = exp(predict(melhor_modelo, newdata =data))
   
-  data['CHF_PREDITO'] = predicoes
+  data['PREDICTED_CHF_LM'] = predicoes
 
   return(data)
 }
@@ -30,6 +30,9 @@ predict_best_glm = function(data,model = 1){
     
     predicoes = exp(predict(melhor_glm, newdata =data))
     
+    data['PREDICTED_CHF_GLM_1'] = predicoes
+    
+    
   } else if (model == 2){
     
     modelo_glm = readRDS("data/modelos_glm_gamma_log.rds")
@@ -38,10 +41,9 @@ predict_best_glm = function(data,model = 1){
     
     predicoes = exp(predict(melhor_glm, newdata =data))
     
+    data['PREDICTED_CHF_GLM_2'] = predicoes
+    
   }
-  
-
-  data['CHF_PREDITO'] = predicoes
   
   return(data)
   
@@ -62,6 +64,8 @@ predict_best_gam = function(data,model = 1){
     
     predicoes = exp(predict(melhor_gam, newdata =data))
     
+    data['PREDICTED_CHF_GAM_1'] = predicoes
+    
   } else if (model == 2){
     
     modelo_gam = readRDS("data/modelos_gam_gamma_log_ad_simples.rds")
@@ -69,6 +73,8 @@ predict_best_gam = function(data,model = 1){
     melhor_gam = modelo_gam[[1]]
     
     predicoes = exp(predict(melhor_gam, newdata =data))
+    
+    data['PREDICTED_CHF_GAM_2'] = predicoes
     
   } else if (model == 3){
     
@@ -78,6 +84,8 @@ predict_best_gam = function(data,model = 1){
     
     predicoes = exp(predict(melhor_gam, newdata =data))
     
+    data['PREDICTED_CHF_GAM_3'] = predicoes
+    
   } else if (model == 4){
     
     modelo_gam = readRDS("data/modelos_gam_gamma_log_tp_simples.rds")
@@ -85,6 +93,8 @@ predict_best_gam = function(data,model = 1){
     melhor_gam = modelo_gam[[6]]
     
     predicoes = exp(predict(melhor_gam, newdata =data))
+    
+    data['PREDICTED_CHF_GAM_4'] = predicoes
     
   } else if (model == 5){
     
@@ -94,6 +104,8 @@ predict_best_gam = function(data,model = 1){
     
     predicoes = exp(predict(melhor_gam, newdata =data))
     
+    data['PREDICTED_CHF_GAM_5'] = predicoes
+    
   } else if (model == 6){
     
     modelo_gam = readRDS("data/modelos_gam_gamma_log_cr_simples.rds")
@@ -101,6 +113,8 @@ predict_best_gam = function(data,model = 1){
     melhor_gam = modelo_gam[[5]]
     
     predicoes = exp(predict(melhor_gam, newdata =data))
+    
+    data['PREDICTED_CHF_GAM_6'] = predicoes
     
   } else if (model == 7){
     
@@ -110,9 +124,9 @@ predict_best_gam = function(data,model = 1){
     
     predicoes = exp(predict(melhor_gam, newdata =data))
     
+    data['PREDICTED_CHF_GAM_7'] = predicoes
+    
   }
-  
-  data['CHF_PREDITO'] = predicoes
   
   return(data)
   
@@ -134,6 +148,8 @@ predict_best_qgam = function(data,model = 7){
     
     predicoes = predict(melhor_qgam, newdata = data)
     
+    data['PREDICTED_CHF_QGAM_1'] = predicoes
+    
   } else if (model == 2){
     
     modelo_qgam = readRDS("data/modelos_qgam_50_tp.rds")
@@ -141,6 +157,8 @@ predict_best_qgam = function(data,model = 7){
     melhor_qgam = modelo_qgam[[6]]
     
     predicoes = predict(melhor_qgam, newdata = data)
+    
+    data['PREDICTED_CHF_QGAM_2'] = predicoes
     
   } else if (model == 3){
     
@@ -150,9 +168,9 @@ predict_best_qgam = function(data,model = 7){
     
     predicoes = predict(melhor_qgam, newdata = data)
     
+    data['PREDICTED_CHF_QGAM_3'] = predicoes
+    
   }
-  
-  data['CHF_PREDITO'] = predicoes
   
   return(data)
   
@@ -169,7 +187,7 @@ predict_qgam_095 = function(data){
     
     predicoes = predict(modelo_qgam, newdata = data)
     
-    data['CHF_PREDITO_QTL95'] = predicoes
+    data['PREDICTED_CHF_QTL95'] = predicoes
     
     return(data)
 
